@@ -40,20 +40,27 @@ func TestConcurrentActions(t *testing.T) {
     jump_avg := 59;
     walk_avg := 61;
     run_avg := 63;
+    seen := 0;
     for _, atm := range times {
         switch atm.Action {
         case "jump":
             if jump_avg != atm.Avg {
                 t.Errorf("Expected avg of %d, got %d for action `%s`", jump_avg, atm.Avg, atm.Action)
             }
+            seen += 1
         case "walk":
             if walk_avg != atm.Avg {
                 t.Errorf("Expected avg of %d, got %d for action `%s`", walk_avg, atm.Avg, atm.Action)
             }
+            seen += 1
         case "run":
             if run_avg != atm.Avg {
                 t.Errorf("Expected avg of %d, got %d for action `%s`", run_avg, atm.Avg, atm.Action)
             }
+            seen += 1
         }
+    }
+    if seen != 3 {
+        t.Errorf("Result of GetStats did not include the expected entries")
     }
 }
