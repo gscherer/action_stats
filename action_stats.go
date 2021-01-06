@@ -11,9 +11,9 @@ import (
 )
 
 type actionTime struct {
-    Action *string   `json:"action"`
-    Time   *int      `json:"time,omitempty"`
-    Avg    *int      `json:"avg,omitempty"`
+    Action string   `json:"action"`
+    Time   int      `json:"time,omitempty"`
+    Avg    int      `json:"avg,omitempty"`
 }
 
 type actionStat struct {
@@ -36,14 +36,11 @@ type actionMap struct {
 }
 
 func (a *actionMap) addActionTime(atm actionTime) error {
-    if atm.Action == nil || atm.Time == nil {
+    if atm.Action == "" || atm.Time <= 0 {
         return errors.New("Invalid action or time")
     }
-    action := *atm.Action
-    time := *atm.Time
-    if action == "" || time < 0 {
-        return errors.New("Invalid action or time")
-    }
+    action := atm.Action
+    time := atm.Time
     stat, ok := a.store[action]
     if !ok {
         a.store[action] = &actionStat{count: 1, totalTime: time}
@@ -59,8 +56,7 @@ func (a *actionMap) MarshalJSON() ([]byte, error) {
     res := make([]actionTime, len(a.store))
     i := 0
     for action, stat := range a.store {
-        avg := stat.avg()
-        res[i] = actionTime{Action: &action, Avg: &avg}
+        res[i] = actionTime{Action: action, Avg: stat.avg()}
         i++
     }
     return json.Marshal(res)

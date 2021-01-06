@@ -11,21 +11,23 @@ func TestConcurrentActions(t *testing.T) {
     var wg sync.WaitGroup
     actions := NewActionMap()
     for i := 0; i < 100; i++ {
-        t := 10 + i
         wg.Add(3)
+        jump_t := 10 + i
+        walk_t := 12 + i
+        run_t := 14 + i
         go func() {
             defer wg.Done()
-            actions.AddAction(fmt.Sprintf(`{"action": "jump", "time": %d}`, t))
+            actions.AddAction(fmt.Sprintf(`{"action": "jump", "time": %d}`, jump_t))
             actions.GetStats()
         }()
         go func() {
             defer wg.Done()
-            actions.AddAction(fmt.Sprintf(`{"action": "walk", "time": %d}`, t))
+            actions.AddAction(fmt.Sprintf(`{"action": "walk", "time": %d}`, walk_t))
             actions.GetStats()
         }()
         go func() {
             defer wg.Done()
-            actions.AddAction(fmt.Sprintf(`{"action": "run", "time": %d}`, t))
+            actions.AddAction(fmt.Sprintf(`{"action": "run", "time": %d}`, run_t))
             actions.GetStats()
         }()
     }
@@ -35,12 +37,23 @@ func TestConcurrentActions(t *testing.T) {
     if err := json.Unmarshal([]byte(stats), &times); err != nil {
         t.Fatal(err)
     }
+    jump_avg := 59;
+    walk_avg := 61;
+    run_avg := 63;
     for _, atm := range times {
-        if atm.Avg == nil {
-            t.Fatal("Average is nil")
-        }
-        if *atm.Avg != 59 {
-            t.Errorf("Expected avg of 59, got %d for action `%s`", *atm.Avg, *atm.Action)
+        switch atm.Action {
+        case "jump":
+            if jump_avg != atm.Avg {
+                t.Errorf("Expected avg of %d, got %d for action `%s`", jump_avg, atm.Avg, atm.Action)
+            }
+        case "walk":
+            if walk_avg != atm.Avg {
+                t.Errorf("Expected avg of %d, got %d for action `%s`", walk_avg, atm.Avg, atm.Action)
+            }
+        case "run":
+            if run_avg != atm.Avg {
+                t.Errorf("Expected avg of %d, got %d for action `%s`", run_avg, atm.Avg, atm.Action)
+            }
         }
     }
 }
