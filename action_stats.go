@@ -130,7 +130,7 @@ func StartServer(port string) {
             case http.MethodPost:
                 actionMap.handleHttpPost(res, req)
             default:
-                httpJsonError(res, "", http.StatusFound)
+                httpJsonError(res, "", http.StatusNotFound)
         }
     })
     err := http.ListenAndServe(port, mux)
