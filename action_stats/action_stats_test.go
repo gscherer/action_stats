@@ -36,8 +36,11 @@ func TestConcurrentActions(t *testing.T) {
         t.Fatal(err)
     }
     for _, atm := range times {
-        if atm.Avg != 59 {
-            t.Errorf("Expected avg of 59, got %d for action `%s`", atm.Avg, atm.Action)
+        if atm.Avg == nil {
+            t.Fatal("Average is nil")
+        }
+        if *atm.Avg != 59 {
+            t.Errorf("Expected avg of 59, got %d for action `%s`", *atm.Avg, *atm.Action)
         }
     }
 }
