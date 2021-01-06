@@ -37,30 +37,32 @@ func TestConcurrentActions(t *testing.T) {
     if err := json.Unmarshal([]byte(stats), &times); err != nil {
         t.Fatal(err)
     }
-    jump_avg := 59;
-    walk_avg := 61;
-    run_avg := 63;
-    seen := 0;
+    jump_avg := 59
+    walk_avg := 61
+    run_avg := 63
+    jump_seen := false
+    walk_seen := false
+    run_seen := false
     for _, atm := range times {
         switch atm.Action {
         case "jump":
             if jump_avg != atm.Avg {
                 t.Errorf("Expected avg of %d, got %d for action `%s`", jump_avg, atm.Avg, atm.Action)
             }
-            seen += 1
+            jump_seen = true
         case "walk":
             if walk_avg != atm.Avg {
                 t.Errorf("Expected avg of %d, got %d for action `%s`", walk_avg, atm.Avg, atm.Action)
             }
-            seen += 1
+            walk_seen = true
         case "run":
             if run_avg != atm.Avg {
                 t.Errorf("Expected avg of %d, got %d for action `%s`", run_avg, atm.Avg, atm.Action)
             }
-            seen += 1
+            run_seen = true
         }
     }
-    if seen != 3 {
+    if !jump_seen || !walk_seen || !run_seen {
         t.Errorf("Result of GetStats did not include the expected entries")
     }
 }
