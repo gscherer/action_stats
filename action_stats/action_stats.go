@@ -9,7 +9,6 @@ type actionTime struct {
     Action string   `json:"action"`
     Time   int      `json:"time,omitempty"`
     Avg    int      `json:"avg,omitempty"`
-    Count  int      `json:"count,omitempty"`
 }
 
 type actionStat struct {
@@ -32,11 +31,11 @@ type actionMap struct {
 }
 
 func (a *actionMap) addActionTime(atm actionTime) {
-    _, ok := a.store[atm.Action]
+    stat, ok := a.store[atm.Action]
     if !ok {
         a.store[atm.Action] = &actionStat{count: 1, totalTime: atm.Time}
     } else {
-        a.store[atm.Action].addTime(atm.Time)
+        stat.addTime(atm.Time)
     }
 }
 
