@@ -31,7 +31,7 @@ Example response:
 
 Get a new instance of an `actionMap`. It won't hold any values until a request to `AddAction` is made.
 
-### StartServer(portnumber string)
+### `StartServer(portnumber string)`
 
 Public function used to start the HTTP server. This server hosts two endpoints:
   - GET /action-stats
